@@ -1,6 +1,7 @@
 using System.Drawing;
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.Models;
 using PetFamily.Domain.SpeciesAggregate;
 using PetFamily.Domain.SpeciesAggregate.Entities;
 using PetFamily.Domain.SpeciesAggregate.ValueObjects.Ids;
@@ -17,8 +18,8 @@ public record AppearanceDetails
     
     private AppearanceDetails(
         Colour colouration,
-        double weight,
-        double height)
+        float weight,
+        float height)
     {
         Coloration = colouration;
         Weight = weight;
@@ -26,25 +27,23 @@ public record AppearanceDetails
     }
     
     public Colour Coloration { get; }
-    public double Weight { get; }
-    public double Height { get; }
+    public float Weight { get; }
+    public float Height { get; }
 
-    public static Result<AppearanceDetails> Create(
+    public static Result<AppearanceDetails, Error> Create(
         Colour colouration,
-        double weight,
-        double height)
+        float weight,
+        float height)
 
     {
         if (weight is <= 0 or > Constants.MAX_MEDIUM_LOW_TEXT_LENGTH)
-            return Result.Failure<AppearanceDetails>("Weight must be between 0 and 1000");
+            return Errors.General.MaxLengthExceeded(nameof(weight));
         if (height is <= 0 or > Constants.MAX_MEDIUM_LOW_TEXT_LENGTH)
-            return Result.Failure<AppearanceDetails>("Height must be between 0 and 1000");
+            return Errors.General.MaxLengthExceeded(nameof(height));
         
-        var appearanceDetails = new AppearanceDetails(
+        return new AppearanceDetails(
             colouration, 
             weight,
             height);
-        
-        return Result.Success(appearanceDetails);
     }
 }

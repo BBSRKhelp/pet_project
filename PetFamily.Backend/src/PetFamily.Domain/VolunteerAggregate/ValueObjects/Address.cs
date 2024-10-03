@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Models;
 using static System.String;
 
 namespace PetFamily.Domain.VolunteerAggregate.ValueObjects;
@@ -22,29 +23,27 @@ public record Address
     public string Street { get; }
     public string? Postalcode { get; }
 
-    public static Result<Address> Create(
+    public static Result<Address, Error> Create(
         string country,
         string city,
         string street,
         string? postalcode)
     {
         if (IsNullOrWhiteSpace(country))
-            return Result.Failure<Address>("Country is required");
+            return Errors.General.IsRequired(nameof(country));
 
         if (IsNullOrWhiteSpace(city))
-            return Result.Failure<Address>("City is required");
+            return Errors.General.IsRequired(nameof(city));
 
         if (IsNullOrWhiteSpace(street))
-            return Result.Failure<Address>("Street is required");
+            return Errors.General.IsRequired(nameof(street));
         
         if (IsNullOrWhiteSpace(postalcode))
-            return Result.Failure<Address>("Postcode is required");
+            return Errors.General.IsRequired(nameof(postalcode));
         
-        var address = new Address(country,
+        return new Address(country,
             city,
             street,
             postalcode);
-        
-        return Result.Success(address);
     }
 }

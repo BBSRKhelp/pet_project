@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Models;
 using PetFamily.Domain.SpeciesAggregate.ValueObjects.Ids;
 
 namespace PetFamily.Domain.VolunteerAggregate.ValueObjects;
@@ -14,18 +15,16 @@ public record BreedAndSpeciesId
     public SpeciesId SpeciesId { get; } = null!;
     public Guid BreedId { get; }
 
-    public static Result<BreedAndSpeciesId> Create(
+    public static Result<BreedAndSpeciesId, Error> Create(
         SpeciesId speciesId, 
         Guid breedId)
     {
         if (speciesId == SpeciesId.Empty())
-            return Result.Failure<BreedAndSpeciesId>("Species Id cannot be empty.");
+            return Errors.General.IsRequired(nameof(speciesId));
         
         if (breedId == Guid.Empty)
-            return Result.Failure<BreedAndSpeciesId>("Breed Id cannot be empty.");
+            return Errors.General.IsRequired(nameof(breedId));
         
-        var breedAndSpeciesId = new BreedAndSpeciesId(speciesId, breedId);
-        
-        return Result.Success(breedAndSpeciesId);
+        return new BreedAndSpeciesId(speciesId, breedId);
     }
 }

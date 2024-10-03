@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Models;
 
 namespace PetFamily.Domain.Shared.ValueObjects;
 
@@ -14,13 +15,11 @@ public record PhoneNumber
 
     public string Value { get; } = null!;
 
-    public static Result<PhoneNumber> Create(string phone)
+    public static Result<PhoneNumber, Error> Create(string phone)
     {
-        if (phone.Length != MAX_LENGTH || !Regex.IsMatch(phone, @"^((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}$"))
-            return Result.Failure<PhoneNumber>("Invalid phone number.");
+        if (phone.Length != MAX_LENGTH || !Regex.IsMatch(phone, @"^[0-9]+$"))
+            return Errors.General.IsInvalid(nameof(PhoneNumber));
 
-        var phoneNumber = new PhoneNumber(phone);
-        
-        return Result.Success(phoneNumber);
+        return new PhoneNumber(phone);
     }
 }

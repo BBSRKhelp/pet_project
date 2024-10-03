@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Models;
 using PetFamily.Domain.SpeciesAggregate.Entities;
 using PetFamily.Domain.SpeciesAggregate.ValueObjects.Ids;
 using static System.String;
@@ -26,13 +27,11 @@ public class Species : Shared.Models.Entity<SpeciesId>
     public string Name { get; private set; } = null!;
     public IReadOnlyList<Breed> Breeds => _breeds.AsReadOnly();
 
-    public static Result<Species> Create(string name, IEnumerable<Breed>? breeds )
+    public static Result<Species, Error> Create(string name, IEnumerable<Breed>? breeds )
     {
         if (IsNullOrWhiteSpace(name))
-            return Result.Failure<Species>("Species name cannot be null or empty.");
+            return Errors.General.IsRequired(nameof(name));
         
-        var species = new Species(name, breeds ?? []);
-        
-        return Result.Success(species);
+        return new Species(name, breeds ?? []);
     }
 }

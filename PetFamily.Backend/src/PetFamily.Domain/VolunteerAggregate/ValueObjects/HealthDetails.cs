@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.Models;
 using static System.String;
 
 namespace PetFamily.Domain.VolunteerAggregate.ValueObjects;
@@ -20,19 +21,17 @@ public record HealthDetails
     public bool IsCastrated { get; }
     public bool IsVaccinated { get; }
 
-    public static Result<HealthDetails> Create(
+    public static Result<HealthDetails, Error> Create(
         string healthInformation,
         bool isCastrated,
         bool isVaccinated)
     {
         if (IsNullOrEmpty(healthInformation) || healthInformation.Length > Constants.MAX_MEDIUM_TEXT_LENGTH)
-            return Result.Failure<HealthDetails>("Health information is invalid");
+            return Errors.General.MaxLengthExceeded(nameof(healthInformation));
         
-        var healthDetails = new HealthDetails(
+        return new HealthDetails(
             healthInformation,
             isCastrated,
             isVaccinated);
-        
-        return Result.Success(healthDetails);
     }
 }

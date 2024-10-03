@@ -1,6 +1,6 @@
 namespace PetFamily.Domain.Shared;
 
-public class Constants
+public static class Constants
 {
     public const int MAX_VERY_LOW_TEXT_LENGTH = 50;
     

@@ -1,5 +1,3 @@
-using CSharpFunctionalExtensions;
-
 namespace PetFamily.Domain.VolunteerAggregate.ValueObjects;
 
 public record VolunteerDetails
@@ -12,10 +10,10 @@ public record VolunteerDetails
     {
     }
     
-    public VolunteerDetails(IEnumerable<SocialNetwork> socialNetworks, IEnumerable<Requisite> requisites)
+    public VolunteerDetails(IEnumerable<SocialNetwork>? socialNetworks, IEnumerable<Requisite>? requisites)
     {
-        _socialNetworks.AddRange(socialNetworks);
-        _requisites.AddRange(requisites);
+        if (socialNetworks is not null) _socialNetworks.AddRange(socialNetworks);
+        if (requisites is not null) _requisites.AddRange(requisites);
     }
     
     public IEnumerable<SocialNetwork> SocialNetworks => _socialNetworks;

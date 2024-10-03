@@ -38,10 +38,14 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("patronymic")
                 .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
         });
-        
-        builder.Property(v => v.Email)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
+
+        builder.ComplexProperty(v => v.Email, eb =>
+        {
+            eb.Property(e => e.Value)
+                .IsRequired()
+                .HasColumnName("email")
+                .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
+        });
         
         builder.Property(v => v.Description)
             .IsRequired(false)
@@ -51,7 +55,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             .IsRequired()
             .HasDefaultValue(0);
         
-        builder.OwnsOne(p => p.PhoneNumber, pb =>
+        builder.ComplexProperty(p => p.PhoneNumber, pb =>
         {
             pb.Property(pn => pn.Value)
                 .IsRequired()

@@ -1,5 +1,7 @@
+using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.Models;
 using PetFamily.Domain.Shared.ValueObjects;
 using PetFamily.Domain.SpeciesAggregate.ValueObjects.Ids;
 using PetFamily.Domain.VolunteerAggregate.Enums;
@@ -12,6 +14,7 @@ namespace PetFamily.Domain.VolunteerAggregate.Entities;
 public class Pet : Shared.Models.Entity<PetId>
 {
     //ef core
+    [JsonConstructor]
     private Pet() : base(PetId.NewId())
     {
     }
@@ -51,10 +54,10 @@ public class Pet : Shared.Models.Entity<PetId>
     public StatusForHelp Status { get; private set; }
     public PetDetails Details { get; private set; } = null!;
     public BreedAndSpeciesId BreedAndSpeciesId { get; private set; } = null!;
-    public DateTime CreatedAt => DateTime.Now;
+    public static DateTime CreatedAt => DateTime.Now;
     
     //Result Pattern
-    public static Result<Pet> Create(
+    public static Result<Pet, Error> Create(
         string nickname,
         string description,
         AppearanceDetails appearanceDetails,
@@ -66,13 +69,13 @@ public class Pet : Shared.Models.Entity<PetId>
         PetDetails details,
         BreedAndSpeciesId breedAndSpeciesId)
     {
-        if (nickname.Length > 50)
-            return Result.Failure<Pet>($"'{nameof(Nickname)}' must be less than 50 characters.");
+        if (nickname.Length > Constants.MAX_VERY_LOW_TEXT_LENGTH)
+           return Errors.General.MaxLengthExceeded(nameof(nickname));
         
-        if (description.Length > 2000)
-            return Result.Failure<Pet>($"'{nameof(Description)}' must be less than 2000 characters.");
+        if (description.Length > Constants.MAX_MEDIUM_TEXT_LENGTH)
+            return Errors.General.MaxLengthExceeded(nameof(description));
         
-        var pet = new Pet(
+        return new Pet(
             nickname,
             description, 
             appearanceDetails,
@@ -83,8 +86,6 @@ public class Pet : Shared.Models.Entity<PetId>
             status, 
             details,
             breedAndSpeciesId);
-        
-        return Result.Success(pet);
     }
 }
 

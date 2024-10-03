@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Models;
 using PetFamily.Domain.SpeciesAggregate.ValueObjects.Ids;
 using static System.String;
 
@@ -18,13 +19,11 @@ public class Breed : Shared.Models.Entity<BreedId>
 
     public string Name { get; } = null!;
 
-    public static Result<Breed> Create(string name)
+    public static Result<Breed, Error> Create(string name)
     {
         if (IsNullOrWhiteSpace(name))
-            return Result.Failure<Breed>($"\"name\" cannot be null or empty.");
+            return Errors.General.IsRequired(nameof(name));
         
-        var breed = new Breed(name);
-
-        return Result.Success(breed);
+        return new Breed(name);
     }
 }

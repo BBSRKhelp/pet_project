@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Models;
 using static System.String;
 
 namespace PetFamily.Domain.VolunteerAggregate.ValueObjects;
@@ -19,13 +20,11 @@ public record PetPhoto
     public string Path { get; } = null!;
     public bool? IsMainPhoto { get; }
 
-    public static Result<PetPhoto> Create(string path, bool isMainPhoto)
+    public static Result<PetPhoto, Error> Create(string path, bool isMainPhoto)
     {
         if(IsNullOrEmpty(path))
-            return Result.Failure<PetPhoto>("Path cannot be null or empty");
+            return Errors.General.IsRequired(nameof(path));
         
-        var petPhoto = new PetPhoto(path, isMainPhoto);
-        
-        return Result.Success(petPhoto);
+        return new PetPhoto(path, isMainPhoto);
     }
 }

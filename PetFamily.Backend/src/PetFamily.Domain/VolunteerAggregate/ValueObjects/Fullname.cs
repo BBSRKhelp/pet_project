@@ -1,10 +1,12 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Models;
+using static System.String;
 
 namespace PetFamily.Domain.VolunteerAggregate.ValueObjects;
 
 public record Fullname
 {
-    private Fullname(string firstName, string lastName, string patronymic)
+    private Fullname(string firstName, string lastName, string? patronymic)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -15,22 +17,17 @@ public record Fullname
     public string LastName { get; }
     public string? Patronymic { get; }
 
-    public static Result<Fullname> Create(
+    public static Result<Fullname, Error> Create(
         string firstName,
         string lastName,
-        string patronymic)
+        string? patronymic = null)
     {
-        if (string.IsNullOrWhiteSpace(firstName))
-            return Result.Failure<Fullname>("First name cannot be empty or null");
+        if (IsNullOrWhiteSpace(firstName))
+            return Errors.General.IsRequired(nameof(firstName));
 
-        if (string.IsNullOrWhiteSpace(lastName))
-            return Result.Failure<Fullname>("Last name cannot be empty or null");
+        if (IsNullOrWhiteSpace(lastName))
+            return Errors.General.IsRequired(nameof(lastName));
         
-        if (string.IsNullOrWhiteSpace(patronymic))
-            return Result.Failure<Fullname>("Patronymic cannot be empty or null");
-        
-        var fullname = new Fullname(firstName, lastName, patronymic);
-        
-        return Result.Success(fullname);
+        return new Fullname(firstName, lastName, patronymic);
     }
 }
