@@ -178,6 +178,13 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             });
         });
 
+        builder.OwnsOne(p => p.Position, snb =>
+        {
+            snb.Property(sn => sn.Value)
+                .IsRequired()
+                .HasColumnName("serial_number");
+        });
+
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");

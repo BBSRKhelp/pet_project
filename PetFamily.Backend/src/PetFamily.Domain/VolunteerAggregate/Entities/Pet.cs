@@ -9,10 +9,10 @@ using PetFamily.Domain.VolunteerAggregate.ValueObjects.Shell;
 
 namespace PetFamily.Domain.VolunteerAggregate.Entities;
 
-public class  Pet : Shared.Models.Entity<PetId>
+public class Pet : Shared.Models.Entity<PetId>
 {
     private bool _isDeleted = false;
-    
+
     //ef core
     [JsonConstructor]
     private Pet() : base(PetId.NewId())
@@ -57,11 +57,37 @@ public class  Pet : Shared.Models.Entity<PetId>
     public PetPhotosShell PetPhotos { get; private set; } = null!;
     public RequisitesShell Requisites { get; private set; } = null!;
     public BreedAndSpeciesId BreedAndSpeciesId { get; private set; } = null!;
+    public Position Position { get; private set; } = null!;
     public static DateTime CreatedAt => DateTime.Now;
-    
-    public UnitResult<Error> UpdatePhotos(PetPhotosShell photos)
-    {
+
+    public void UpdatePhotos(PetPhotosShell photos) =>
         PetPhotos = photos;
+    
+    public void SetSerialNumber(Position position) =>
+        Position = position;
+    
+    public void Move(Position newPosition) =>
+        Position = newPosition;
+
+    public UnitResult<Error> MoveForward()
+    {
+        var newPosition = Position.Forward();
+        if (newPosition.IsFailure)
+            return newPosition.Error;
+        
+        Position = newPosition.Value;
+        
+        return Result.Success<Error>();
+    }
+    
+    public UnitResult<Error> MoveBack()
+    {
+        var newPosition = Position.Back();
+        if (newPosition.IsFailure)
+            return newPosition.Error;
+        
+        Position = newPosition.Value;
+        
         return Result.Success<Error>();
     }
     

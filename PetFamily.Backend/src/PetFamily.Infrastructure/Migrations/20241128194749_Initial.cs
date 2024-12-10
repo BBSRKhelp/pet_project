@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetFamily.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class INITIAL : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,9 +32,9 @@ namespace PetFamily.Infrastructure.Migrations
                     last_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     patronymic = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     description = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    phone_number = table.Column<string>(type: "character varying(11)", maxLength: 11, nullable: false),
                     work_experience = table.Column<byte>(type: "smallint", maxLength: 100, nullable: false),
+                    phone_number = table.Column<string>(type: "character varying(11)", maxLength: 11, nullable: false),
+                    email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     requisites = table.Column<string>(type: "jsonb", nullable: true),
                     social_networks = table.Column<string>(type: "jsonb", nullable: true),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -70,24 +70,25 @@ namespace PetFamily.Infrastructure.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    birthday = table.Column<DateOnly>(type: "date", nullable: true),
                     coloration = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     weight = table.Column<float>(type: "real", nullable: false, defaultValue: 0f),
                     height = table.Column<float>(type: "real", nullable: false, defaultValue: 0f),
+                    status = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    health_information = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    is_castrated = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    is_vaccinated = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     country = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     city = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     street = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     postalcode = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     phone_number = table.Column<string>(type: "character varying(11)", maxLength: 11, nullable: false),
-                    birthday = table.Column<DateOnly>(type: "date", nullable: true),
-                    status = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
-                    health_information = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
-                    is_castrated = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    is_vaccinated = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    pet_photo = table.Column<string>(type: "jsonb", nullable: true),
-                    requisite = table.Column<string>(type: "jsonb", nullable: true),
+                    serial_number = table.Column<int>(type: "integer", nullable: false),
+                    pet_photo = table.Column<string>(type: "jsonb", nullable: false),
+                    requisite = table.Column<string>(type: "jsonb", nullable: false),
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>

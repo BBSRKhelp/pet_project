@@ -57,15 +57,15 @@ public class CreateVolunteerHandler
             ?.Select(x => Requisite.Create(x.Title, x.Description).Value) ?? [];
         var requisites = new RequisitesShell(requisite);
 
-        var volunteerEmail = await _volunteersRepository.GetByEmailAsync(email, cancellationToken);
-        if (volunteerEmail.IsSuccess)
+        var volunteerEmailResult = await _volunteersRepository.GetByEmailAsync(email, cancellationToken);
+        if (volunteerEmailResult.IsSuccess)
         {
             _logger.LogWarning("Volunteer creation failed");
             return (ErrorList)Errors.General.IsExisted(nameof(email));
         }
 
-        var volunteerPhone = await _volunteersRepository.GetByPhoneAsync(phoneNumber, cancellationToken);
-        if (volunteerPhone.IsSuccess)
+        var volunteerPhoneResult = await _volunteersRepository.GetByPhoneAsync(phoneNumber, cancellationToken);
+        if (volunteerPhoneResult.IsSuccess)
         {
             _logger.LogWarning("Volunteer creation failed");
             return (ErrorList)Errors.General.IsExisted(nameof(phoneNumber));
