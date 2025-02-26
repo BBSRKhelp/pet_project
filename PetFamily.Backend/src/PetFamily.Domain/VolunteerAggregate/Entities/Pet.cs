@@ -24,7 +24,7 @@ public class Pet : CSharpFunctionalExtensions.Entity<PetId>
         HealthDetails healthDetails,
         Address address,
         PhoneNumber phoneNumber,
-        DateOnly? birthday,
+        DateTime? birthDate,
         Status status,
         IReadOnlyList<Requisite> requisites,
         BreedAndSpeciesId breedAndSpeciesId)
@@ -36,7 +36,7 @@ public class Pet : CSharpFunctionalExtensions.Entity<PetId>
         HealthDetails = healthDetails;
         Address = address;
         PhoneNumber = phoneNumber;
-        Birthday = birthday;
+        BirthDate = birthDate;
         Status = status;
         Requisites = requisites;
         BreedAndSpeciesId = breedAndSpeciesId;
@@ -47,7 +47,7 @@ public class Pet : CSharpFunctionalExtensions.Entity<PetId>
     public AppearanceDetails AppearanceDetails { get; private set; } = null!;
     public Address Address { get; private set; } = null!;
     public PhoneNumber PhoneNumber { get; private set; } = null!;
-    public DateOnly? Birthday { get; private set; }
+    public DateTime? BirthDate { get; private set; }
     public Status Status { get; private set; }
     public HealthDetails HealthDetails { get; private set; } = null!;
     public IReadOnlyList<Requisite> Requisites { get; private set; } = [];
@@ -71,7 +71,7 @@ public class Pet : CSharpFunctionalExtensions.Entity<PetId>
         AppearanceDetails appearanceDetails,
         Address address,
         PhoneNumber phoneNumber,
-        DateOnly? birthday,
+        DateTime? birthday,
         HealthDetails healthDetails,
         IReadOnlyList<Requisite> requisites,
         BreedAndSpeciesId breedAndSpeciesId)
@@ -81,7 +81,7 @@ public class Pet : CSharpFunctionalExtensions.Entity<PetId>
         AppearanceDetails = appearanceDetails;
         Address = address;
         PhoneNumber = phoneNumber;
-        Birthday = birthday;
+        BirthDate = birthday;
         HealthDetails = healthDetails;
         Requisites = requisites;
         BreedAndSpeciesId = breedAndSpeciesId;

@@ -59,7 +59,7 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
         var description = Description.Create(command.Description).Value;
 
         var appearanceDetails = AppearanceDetails.Create(
-            command.AppearanceDetails.Colouration,
+            command.AppearanceDetails.Coloration,
             command.AppearanceDetails.Weight,
             command.AppearanceDetails.Height).Value;
 
@@ -72,7 +72,7 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
             command.Address.Country,
             command.Address.City,
             command.Address.Street,
-            command.Address.Postalcode).Value;
+            command.Address.PostalCode).Value;
 
         var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
 
@@ -98,7 +98,7 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
             healthDetails,
             address,
             phoneNumber,
-            command.Birthday,
+            command.BirthDate,
             command.Status,
             requisites,
             breedAndSpeciesId);

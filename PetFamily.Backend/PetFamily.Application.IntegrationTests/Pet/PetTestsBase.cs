@@ -35,7 +35,7 @@ public class PetTestsBase : IClassFixture<PetTestsWebFactory>, IAsyncLifetime
             HealthDetails.Create("string.Empty", true, true).Value,
             Address.Create("string.Empty", "string.Empty", "string.Empty", "string.Empty").Value,
             PhoneNumber.Create("89166666666").Value,
-            DateOnly.MinValue,
+            DateTime.Now,
             Status.FoundHome,
             [],
             BreedAndSpeciesId.Create(speciesId, breedId).Value);

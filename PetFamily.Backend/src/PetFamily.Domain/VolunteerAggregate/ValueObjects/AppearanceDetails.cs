@@ -13,11 +13,11 @@ public record AppearanceDetails
     }
 
     private AppearanceDetails(
-        Colour colouration,
+        Colour coloration,
         float weight,
         float height)
     {
-        Coloration = colouration;
+        Coloration = coloration;
         Weight = weight;
         Height = height;
     }
@@ -27,7 +27,7 @@ public record AppearanceDetails
     public float Height { get; }
 
     public static Result<AppearanceDetails, Error> Create(
-        Colour colouration,
+        Colour coloration,
         float weight,
         float height)
 
@@ -39,7 +39,7 @@ public record AppearanceDetails
             return Errors.General.MaxLengthExceeded(nameof(height));
 
         return new AppearanceDetails(
-            colouration,
+            coloration,
             weight,
             height);
     }

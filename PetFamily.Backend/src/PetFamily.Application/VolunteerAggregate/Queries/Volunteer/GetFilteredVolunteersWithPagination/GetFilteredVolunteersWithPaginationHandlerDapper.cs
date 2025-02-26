@@ -44,89 +44,81 @@ public class GetFilteredVolunteersWithPaginationHandlerDapper :
             return validationResult.ToErrorList();
         }
 
-        try
+        using var connection = _sqlConnectionFactory.GetConnection();
+
+        _logger.LogInformation("Connection with database established");
+
+        var builder = new SqlBuilder();
+
+        var countTemplate = builder.AddTemplate("SELECT COUNT(*) FROM volunteers /**where**/");
+
+        var volunteersTemplate = builder.AddTemplate("""
+                                                     SELECT id, 
+                                                     first_name, 
+                                                     last_name, 
+                                                     patronymic, 
+                                                     description, 
+                                                     work_experience,
+                                                     phone_number,
+                                                     email,
+                                                     requisites, 
+                                                     social_networks
+                                                     FROM volunteers
+                                                     /**where**/ 
+                                                     /**orderby**/
+                                                     LIMIT @PageSize OFFSET @OffSet;
+                                                     """);
+
+        builder.Where("is_deleted = 'false'");
+
+        if (!string.IsNullOrWhiteSpace(query.FirstName))
+            builder.Where("first_name ILIKE @FirstName");
+
+        if (!string.IsNullOrWhiteSpace(query.LastName))
+            builder.Where("last_name ILIKE @LastName");
+
+        if (!string.IsNullOrWhiteSpace(query.Patronymic))
+            builder.Where("patronymic ILIKE @Patronymic");
+
+        if (query.WorkExperience.HasValue)
+            builder.Where("work_experience = @WorkExperience");
+
+        builder.OrderBy($"{query.SortBy} {query.SortDirection}");
+
+        var param = new
         {
-            using var connection = _sqlConnectionFactory.GetConnection();
+            PageSize = query.PageSize,
+            OffSet = (query.PageNumber - 1) * query.PageSize,
+            FirstName = '%' + query.FirstName + '%',
+            LastName = '%' + query.LastName + '%',
+            Patronymic = '%' + query.Patronymic + '%',
+            WorkExperience = query.WorkExperience,
+            SortDirection = query.SortDirection,
+            SortBy = query.SortBy
+        };
 
-            _logger.LogInformation("Connection with database established");
+        var totalCount = await connection.ExecuteScalarAsync<long>(countTemplate.RawSql, param);
 
-            var builder = new SqlBuilder();
-
-            var countTemplate = builder.AddTemplate("SELECT COUNT(*) FROM volunteers /**where**/");
-
-            var volunteersTemplate = builder.AddTemplate("""
-                                                         SELECT id, 
-                                                         first_name, 
-                                                         last_name, 
-                                                         patronymic, 
-                                                         description, 
-                                                         work_experience,
-                                                         phone_number,
-                                                         email,
-                                                         requisites, 
-                                                         social_networks
-                                                         FROM volunteers
-                                                         /**where**/ 
-                                                         /**orderby**/
-                                                         LIMIT @PageSize OFFSET @OffSet;
-                                                         """);
-
-            builder.Where("is_deleted = 'false'");
-
-            if (!string.IsNullOrWhiteSpace(query.FirstName))
-                builder.Where("first_name ILIKE @FirstName");
-
-            if (!string.IsNullOrWhiteSpace(query.LastName))
-                builder.Where("last_name ILIKE @LastName");
-
-            if (!string.IsNullOrWhiteSpace(query.Patronymic))
-                builder.Where("patronymic ILIKE @Patronymic");
-
-            if (query.WorkExperience.HasValue)
-                builder.Where("work_experience = @WorkExperience");
-
-            builder.OrderBy($"{query.SortBy} {query.SortDirection}");
-
-            var param = new
+        var volunteers = await connection.QueryAsync<VolunteerDto, string, string, VolunteerDto>(
+            volunteersTemplate.RawSql,
+            (volunteer, jsonRequisites, jsonSocialNetwork) =>
             {
-                PageSize = query.PageSize,
-                OffSet = (query.PageNumber - 1) * query.PageSize,
-                FirstName = '%' + query.FirstName + '%',
-                LastName = '%' + query.LastName + '%',
-                Patronymic = '%' + query.Patronymic + '%',
-                WorkExperience = query.WorkExperience,
-                SortDirection = query.SortDirection,
-                SortBy = query.SortBy
-            };
+                volunteer.Requisites = JsonSerializer.Deserialize<RequisiteDto[]>(jsonRequisites)!;
+                volunteer.SocialNetworks = JsonSerializer.Deserialize<SocialNetworkDto[]>(jsonSocialNetwork)!;
 
-            var totalCount = await connection.ExecuteScalarAsync<long>(countTemplate.RawSql, param);
+                return volunteer;
+            },
+            splitOn: "requisites,social_networks",
+            param: param);
 
-            var volunteers = await connection.QueryAsync<VolunteerDto, string, string, VolunteerDto>(
-                volunteersTemplate.RawSql,
-                (volunteer, jsonRequisites, jsonSocialNetwork) =>
-                {
-                    volunteer.Requisites = JsonSerializer.Deserialize<RequisiteDto[]>(jsonRequisites)!;
-                    volunteer.SocialNetworks = JsonSerializer.Deserialize<SocialNetworkDto[]>(jsonSocialNetwork)!;
+        _logger.LogInformation("Volunteers have been received");
 
-                    return volunteer;
-                },
-                splitOn: "requisites,social_networks",
-                param: param);
-
-            _logger.LogInformation("Volunteers have been received");
-
-            return new PagedList<VolunteerDto>
-            {
-                Items = volunteers.ToList(),
-                TotalCount = totalCount,
-                PageNumber = query.PageNumber,
-                PageSize = query.PageSize
-            };
-        }
-        catch (Exception ex)
+        return new PagedList<VolunteerDto>
         {
-            _logger.LogError(ex, "Failed to get volunteers with pagination");
-            return (ErrorList)Errors.Database.IsFailure();
-        }
+            Items = volunteers.ToList(),
+            TotalCount = totalCount,
+            PageNumber = query.PageNumber,
+            PageSize = query.PageSize
+        };
     }
 }

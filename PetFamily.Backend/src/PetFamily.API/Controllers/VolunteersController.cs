@@ -142,32 +142,6 @@ public class VolunteersController : ControllerBase
         return result.ToResponse();
     }
 
-    [HttpGet]
-    public async Task<ActionResult<PagedList<VolunteerDto>>> GetAsync(
-        [FromServices] GetFilteredVolunteersWithPaginationHandlerDapper handler,
-        [FromQuery] GetFilteredVolunteersWithPaginationRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var query = request.ToQuery();
-
-        var result = await handler.HandleAsync(query, cancellationToken);
-
-        return result.ToResponse();
-    }
-
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<VolunteerDto>> GetByIdAsync(
-        [FromServices] GetVolunteerByIdHandler handler,
-        [FromRoute] Guid id,
-        CancellationToken cancellationToken = default)
-    {
-        var query = new GetVolunteerByIdQuery(id);
-
-        var result = await handler.HandleAsync(query, cancellationToken);
-
-        return result.ToResponse();
-    }
-
     [HttpPut("{volunteerId:guid}/pets/{petId:guid}/main-info")]
     public async Task<ActionResult<Guid>> UpdatePetMainInfoAsync(
         [FromServices] UpdateMainPetInfoHandler handler,
@@ -237,6 +211,32 @@ public class VolunteersController : ControllerBase
         var command = request.ToCommand(volunteerId, petId);
 
         var result = await handler.HandleAsync(command, cancellationToken);
+
+        return result.ToResponse();
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<PagedList<VolunteerDto>>> GetAsync(
+        [FromServices] GetFilteredVolunteersWithPaginationHandlerDapper handler,
+        [FromQuery] GetFilteredVolunteersWithPaginationRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var query = request.ToQuery();
+
+        var result = await handler.HandleAsync(query, cancellationToken);
+
+        return result.ToResponse();
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<VolunteerDto>> GetByIdAsync(
+        [FromServices] GetVolunteerByIdHandler handler,
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetVolunteerByIdQuery(id);
+
+        var result = await handler.HandleAsync(query, cancellationToken);
 
         return result.ToResponse();
     }

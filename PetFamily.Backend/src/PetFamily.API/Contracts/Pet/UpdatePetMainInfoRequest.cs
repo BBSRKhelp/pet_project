@@ -8,7 +8,7 @@ namespace PetFamily.API.Contracts.Pet;
 public record UpdatePetMainInfoRequest(
     string? Name,
     string? Description,
-    string Colouration,
+    string Coloration,
     float Weight,
     float Height,
     string Country,
@@ -16,7 +16,7 @@ public record UpdatePetMainInfoRequest(
     string Street,
     string? PostalCode,
     string PhoneNumber,
-    DateOnly? Birthday,
+    DateTime? BirthDate,
     string HealthInformation,
     bool IsCastrated,
     bool IsVaccinated,
@@ -26,7 +26,7 @@ public record UpdatePetMainInfoRequest(
 {
     public UpdateMainPetInfoCommand ToCommand(Guid volunteerId, Guid petId)
     {
-        var coloration = Enum.Parse<Colour>(Colouration, true);
+        var coloration = Enum.TryParse(Coloration, true, out Colour resultColour) ? resultColour : Colour.Unknown;
         
         var appearanceDetails = new AppearanceDetailsDto(coloration, Weight, Height);
 
@@ -44,7 +44,7 @@ public record UpdatePetMainInfoRequest(
             appearanceDetails,
             address,
             PhoneNumber,
-            Birthday,
+            BirthDate,
             healthDetails,
             Requisites,
             breedAndSpeciesId);

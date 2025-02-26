@@ -86,9 +86,9 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasMaxLength(Domain.Shared.Constants.MAX_LOW_TEXT_LENGTH)
                 .HasColumnOrder(9);
 
-            ab.Property(p => p.Postalcode)
+            ab.Property(p => p.PostalCode)
                 .IsRequired(false)
-                .HasColumnName("postalcode")
+                .HasColumnName("postal_code")
                 .HasMaxLength(Domain.Shared.Constants.MAX_LOW_TEXT_LENGTH)
                 .HasColumnOrder(10);
         });
@@ -102,7 +102,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnOrder(11);
         });
 
-        builder.Property(p => p.Birthday)
+        builder.Property(p => p.BirthDate)
             .IsRequired(false)
             .HasColumnOrder(12);
 
@@ -131,26 +131,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnOrder(16);
         });
 
-        builder.Property(p => p.Requisites)
-            .IsRequired()
-            .ValueObjectsCollectionJsonConversion(
-                r => new RequisiteDto(r.Title, r.Description),
-                dto => Requisite.Create(dto.Title, dto.Description).Value)
-            .HasColumnOrder(17);
-
-        builder.Property(p => p.PetPhotos)
-            .IsRequired()
-            .ValueObjectsCollectionJsonConversion(
-                pp => new PetPhotoDto(pp.PhotoPath.Path, pp.IsMainPhoto),
-                dto => new PetPhoto(PhotoPath.Create(dto.PhotoPath).Value, dto.IsMainPhoto))
-            .HasColumnOrder(18);
-
         builder.ComplexProperty(p => p.Position, snb =>
         {
             snb.Property(sn => sn.Value)
                 .IsRequired()
                 .HasColumnName("position")
-                .HasColumnOrder(19);
+                .HasColumnOrder(17);
         });
 
         builder.ComplexProperty(p => p.BreedAndSpeciesId, bsb =>
@@ -161,13 +147,27 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasConversion(
                     id => id.Value,
                     value => SpeciesId.Create(value))
-                .HasColumnOrder(20);
+                .HasColumnOrder(18);
 
             bsb.Property(ad => ad.BreedId)
                 .IsRequired()
                 .HasColumnName("breed_id")
-                .HasColumnOrder(21);
+                .HasColumnOrder(19);
         });
+        
+        builder.Property(p => p.Requisites)
+            .IsRequired()
+            .ValueObjectsCollectionJsonConversion(
+                r => new RequisiteDto(r.Title, r.Description),
+                dto => Requisite.Create(dto.Title, dto.Description).Value)
+            .HasColumnOrder(21);
+
+        builder.Property(p => p.PetPhotos)
+            .IsRequired()
+            .ValueObjectsCollectionJsonConversion(
+                pp => new PetPhotoDto(pp.PhotoPath.Path, pp.IsMainPhoto),
+                dto => new PetPhoto(PhotoPath.Create(dto.PhotoPath).Value, dto.IsMainPhoto))
+            .HasColumnOrder(22);
 
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)

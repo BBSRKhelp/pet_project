@@ -74,7 +74,7 @@ public class UpdateMainPetInfoHandler : ICommandHandler<Guid, UpdateMainPetInfoC
         var description = Description.Create(command.Description).Value;
 
         var appearanceDetails = AppearanceDetails.Create(
-            command.AppearanceDetails.Colouration,
+            command.AppearanceDetails.Coloration,
             command.AppearanceDetails.Weight,
             command.AppearanceDetails.Height).Value;
 
@@ -82,7 +82,7 @@ public class UpdateMainPetInfoHandler : ICommandHandler<Guid, UpdateMainPetInfoC
             command.Address.Country,
             command.Address.City,
             command.Address.Street,
-            command.Address.Postalcode).Value;
+            command.Address.PostalCode).Value;
 
         var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
 
@@ -105,7 +105,7 @@ public class UpdateMainPetInfoHandler : ICommandHandler<Guid, UpdateMainPetInfoC
             appearanceDetails,
             address,
             phoneNumber,
-            command.Birthday,
+            command.BirthDate,
             healthDetails,
             requisites,
             breedAndSpeciesId);

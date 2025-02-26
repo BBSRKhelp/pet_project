@@ -260,7 +260,7 @@ public class VolunteerTests
         var healthDetails = HealthDetails.Create("test", true, true).Value;
         var address = Address.Create("test", "test", "test", "test").Value;
         var phoneNumber = PhoneNumber.Create("88888888888").Value;
-        var birthday = DateOnly.Parse("2015-01-01");
+        var birthday = DateTime.Now;
         var status = Status.LookingForHome;
         IReadOnlyList<Requisite> requisites = [Requisite.Create("TestRequisite", "TestRequisiteUrl").Value];
         var breedAndSpeciesId = BreedAndSpeciesId.Create(SpeciesId.NewId(), Guid.NewGuid()).Value;

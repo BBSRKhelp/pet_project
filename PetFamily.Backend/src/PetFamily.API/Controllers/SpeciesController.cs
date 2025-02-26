@@ -8,7 +8,6 @@ using PetFamily.Application.SpeciesAggregate.Commands.Breed.AddBreed;
 using PetFamily.Application.SpeciesAggregate.Commands.Breed.DeleteBreed;
 using PetFamily.Application.SpeciesAggregate.Commands.Species.Create;
 using PetFamily.Application.SpeciesAggregate.Commands.Species.Delete;
-using PetFamily.Application.SpeciesAggregate.Queries.GetBreedsByIdSpecies;
 using PetFamily.Application.SpeciesAggregate.Queries.GetFilteredSpeciesWithPagination;
 
 namespace PetFamily.API.Controllers;
@@ -81,20 +80,6 @@ public class SpeciesController : ControllerBase
         
         var result = await handler.HandleAsync(query, cancellationToken);
 
-        return result.ToResponse();
-    }
-
-    [HttpGet("{speciesId:guid}/breeds")]
-    public async Task<ActionResult<PagedList<BreedDto>>> GetBreedAsync(
-        [FromServices] GetBreedsByIdSpeciesHandler speciesHandler,
-        [FromQuery] GetBreedsByIdSpeciesRequest request,
-        [FromRoute] Guid speciesId,
-        CancellationToken cancellationToken = default)
-    {
-        var query = request.ToQuery(speciesId);
-        
-        var result = await speciesHandler.HandleAsync(query, cancellationToken);
-        
         return result.ToResponse();
     }
 }

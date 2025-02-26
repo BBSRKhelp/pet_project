@@ -11,14 +11,7 @@ public static class DependencyInjection
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(options =>
-            options.MapType<DateOnly>(() => new OpenApiSchema
-            {
-                Type = "string",
-                Format = "date",
-                Example = new OpenApiString("yyyy-MM-dd")
-            })
-        );
+        services.AddSwaggerGen();
         return services;
     }
 

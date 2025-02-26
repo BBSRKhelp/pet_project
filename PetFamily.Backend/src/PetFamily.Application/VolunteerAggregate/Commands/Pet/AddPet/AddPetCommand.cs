@@ -13,7 +13,7 @@ public record AddPetCommand(
     HealthDetailsDto HealthDetails,
     AddressDto Address,
     string PhoneNumber,
-    DateOnly? Birthday,
+    DateTime? BirthDate,
     Status Status,
     IEnumerable<RequisiteDto>? Requisites,
     BreedAndSpeciesIdDto BreedAndSpeciesId) : ICommand;

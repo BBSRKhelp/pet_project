@@ -159,7 +159,7 @@ The PetFamily API provides endpoints for managing species, breeds, volunteers, a
   {
     Name : Nullable<string>
     Description : Nullable<string>
-    Colouration : string
+    Coloration : string
     Weight : float
     Height : float
     HealthInformation : string
@@ -170,7 +170,7 @@ The PetFamily API provides endpoints for managing species, breeds, volunteers, a
     Street : string
     Postalcode : string
     PhoneNumber : string
-    Birthday : Nullable<DateOnly>
+    Birthday : Nullable<DateTime>
     Status : string
     Requisites : Nullable<RequisiteDto[]>
     SpeciesId : Guid
@@ -222,7 +222,7 @@ The PetFamily API provides endpoints for managing species, breeds, volunteers, a
   {
     Name : Nullable<string>
     Description : Nullable<string>
-    Colouration : string
+    Coloration : string
     Weight : float
     Height : float
     Country : string
@@ -230,7 +230,7 @@ The PetFamily API provides endpoints for managing species, breeds, volunteers, a
     Street : string
     Postalcode : string
     PhoneNumber : string
-    Birthday : Nullable<DateOnly>
+    Birthday : Nullable<DateTime>
     HealthInformation : string
     IsCastrated : bool
     IsVaccinated : bool

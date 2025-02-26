@@ -16,10 +16,8 @@ public static class PetFixtureExtensions
         SpeciesId speciesId,
         Guid breedId)
     {
-        fixture.Customize<DateOnly>(c => c.FromFactory<DateTime>(DateOnly.FromDateTime));
-
         return fixture.Build<AddPetCommand>()
-            .With(p => p.Birthday, DateOnly.Parse("2022-12-12"))
+            .With(p => p.BirthDate, DateTime.Now)
             .With(p => p.VolunteerId, volunteerId)
             .With(p => p.Name, (string?)null)
             .With(p => p.Description, (string?)null)
@@ -53,15 +51,13 @@ public static class PetFixtureExtensions
         Guid breedId,
         string phoneNumber)
     {
-        fixture.Customize<DateOnly>(c => c.FromFactory<DateTime>(DateOnly.FromDateTime));
-
         return fixture.Build<UpdateMainPetInfoCommand>()
             .With(p => p.VolunteerId, volunteerId)
             .With(p => p.PetId, petId)
             .With(p => p.AppearanceDetails, new AppearanceDetailsDto(Colour.Black, 12, 12))
             .With(p => p.Address, new AddressDto("co", "ci", "st", null))
             .With(p => p.PhoneNumber, phoneNumber)
-            .With(p => p.Birthday, DateOnly.Parse("2022-12-12"))
+            .With(p => p.BirthDate, DateTime.Now)
             .With(p => p.HealthDetails, new HealthDetailsDto("test", true, true))
             .With(p => p.BreedAndSpeciesId, new BreedAndSpeciesIdDto(speciesId, breedId))
             .Create();

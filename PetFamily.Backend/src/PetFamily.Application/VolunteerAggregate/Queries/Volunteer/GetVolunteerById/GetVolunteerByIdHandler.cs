@@ -39,25 +39,17 @@ public class GetVolunteerByIdHandler : IQueryHandler<VolunteerDto, GetVolunteerB
             return validationResult.ToErrorList();
         }
 
-        try
+        var volunteer = await _readDbContext
+            .Volunteers
+            .Where(v => v.IsDeleted == false)
+            .FirstOrDefaultAsync(v => v.Id == query.VolunteerId, cancellationToken);
+
+        if (volunteer is null)
         {
-            var volunteerQuery = await _readDbContext
-                .Volunteers
-                .Where(v => v.IsDeleted == false)
-                .FirstOrDefaultAsync(v => v.Id == query.VolunteerId, cancellationToken);
-            
-            if (volunteerQuery is null)
-            {
-                _logger.LogInformation("Volunteer with id = '{VolunteerId}' does not found'", query.VolunteerId);
-                return (ErrorList)Errors.General.NotFound("volunteer");
-            }
-            
-            return volunteerQuery;
+            _logger.LogInformation("Volunteer with id = '{VolunteerId}' does not found'", query.VolunteerId);
+            return (ErrorList)Errors.General.NotFound("volunteer");
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to get volunteer by id");
-            return (ErrorList)Errors.Database.IsFailure();
-        }
+
+        return volunteer;
     }
 }

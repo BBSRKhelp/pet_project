@@ -12,7 +12,7 @@ public record UpdateMainPetInfoCommand(
     AppearanceDetailsDto AppearanceDetails,
     AddressDto Address,
     string PhoneNumber,
-    DateOnly? Birthday,
+    DateTime? BirthDate,
     HealthDetailsDto HealthDetails,
     IEnumerable<RequisiteDto>? Requisites,
     BreedAndSpeciesIdDto BreedAndSpeciesId) : ICommand;

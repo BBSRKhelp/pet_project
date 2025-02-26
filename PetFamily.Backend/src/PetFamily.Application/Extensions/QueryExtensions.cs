@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.Models;
 
@@ -52,5 +53,22 @@ public static class QueryExtensions
             PageNumber = pageNumber,
             PageSize = pageSize
         };
+    }
+
+    public static SqlBuilder AddCondition(this SqlBuilder builder, string condition, string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(condition))
+            builder.Where(condition);
+
+        return builder;
+    }
+
+    public static SqlBuilder AddCondition<T>(this SqlBuilder builder, string condition, T? value) 
+        where T : struct
+    {
+        if (value.HasValue)
+            builder.Where(condition);
+
+        return builder;
     }
 }

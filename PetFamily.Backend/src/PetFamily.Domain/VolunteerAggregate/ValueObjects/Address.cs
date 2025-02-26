@@ -10,18 +10,18 @@ public record Address
         string country,
         string city,
         string street,
-        string? postalcode)
+        string? postalCode)
     {
         Country = country;
         City = city;
         Street = street;
-        Postalcode = postalcode;
+        PostalCode = postalCode;
     }
 
     public string Country { get; }
     public string City { get; }
     public string Street { get; }
-    public string? Postalcode { get; }
+    public string? PostalCode { get; }
 
     public static Result<Address, Error> Create(
         string country,
