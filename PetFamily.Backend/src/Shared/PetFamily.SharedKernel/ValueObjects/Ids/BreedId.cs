@@ -1,6 +1,8 @@
+using CSharpFunctionalExtensions;
+
 namespace PetFamily.SharedKernel.ValueObjects.Ids;
 
-public class BreedId : CSharpFunctionalExtensions.ComparableValueObject
+public class BreedId : ComparableValueObject
 {
     private BreedId(Guid value)
     {

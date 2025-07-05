@@ -5,32 +5,24 @@ using PetFamily.Files.Application;
 
 namespace PetFamily.Files.Infrastructure.BackgroundServices;
 
-public class FilesCleanerBackgroundService : BackgroundService
+public class FilesCleanerBackgroundService(
+    IServiceScopeFactory scopeFactory,
+    ILogger<FilesCleanerBackgroundService> logger) 
+    : BackgroundService
 {
-    private readonly IServiceScopeFactory _scopeFactory;
-    private readonly ILogger<FilesCleanerBackgroundService> _logger;
-
-    public FilesCleanerBackgroundService(
-        IServiceScopeFactory scopeFactory,
-        ILogger<FilesCleanerBackgroundService> logger)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _scopeFactory = scopeFactory;
-        _logger = logger;
-    }
-
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        _logger.LogInformation("FilesCleanerBackgroundService is starting.");
-        await using var scope = _scopeFactory.CreateAsyncScope();
+        logger.LogInformation("FilesCleanerBackgroundService is starting");
+        await using var scope = scopeFactory.CreateAsyncScope();
 
         var filesCleanerService = scope.ServiceProvider.GetRequiredService<IFilesCleanerService>();
 
-        while (!stoppingToken.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
-            await filesCleanerService.Process(stoppingToken);
+            await filesCleanerService.ProcessAsync(cancellationToken);
         }
 
         await Task.CompletedTask;
-        _logger.LogInformation("FilesCleanerBackgroundService is stopping.");
+        logger.LogInformation("FilesCleanerBackgroundService is stopping");
     }
 }

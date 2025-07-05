@@ -55,7 +55,7 @@ public class UpdatePetStatusHandler : ICommandHandler<Guid, UpdatePetStatusComma
             return (ErrorList)petResult.Error;
         }
 
-        petResult.Value.UpdateStatus(command.Status);
+        volunteerResult.Value.UpdatePetStatus(petResult.Value, command.Status);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

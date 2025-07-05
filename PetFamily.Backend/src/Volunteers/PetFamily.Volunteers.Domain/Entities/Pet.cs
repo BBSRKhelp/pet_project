@@ -7,9 +7,8 @@ using PetFamily.Volunteers.Domain.ValueObjects.Ids;
 
 namespace PetFamily.Volunteers.Domain.Entities;
 
-public class Pet : Entity<PetId>, ISoftDeletable
+public class Pet : SoftDeletableEntity<PetId>
 {
-    private bool _isDeleted;
     private readonly List<PetPhoto> _petPhotos = [];
 
     //ef core
@@ -50,13 +49,13 @@ public class Pet : Entity<PetId>, ISoftDeletable
     public BreedAndSpeciesId BreedAndSpeciesId { get; private set; } = null!;
     public static DateTime CreatedAt => DateTime.Now;
 
-    public void AddPhotos(IEnumerable<PetPhoto> photos) =>
+    internal void AddPhotos(IReadOnlyList<PetPhoto> photos) =>
         _petPhotos.AddRange(photos);
 
-    public void SetPosition(Position position) =>
+    internal void SetPosition(Position position) =>
         Position = position;
 
-    public void UpdateMainInfo(
+    internal void UpdateMainInfo(
         Name name,
         Description description,
         AppearanceDetails appearanceDetails,
@@ -74,12 +73,12 @@ public class Pet : Entity<PetId>, ISoftDeletable
         BreedAndSpeciesId = breedAndSpeciesId;
     }
 
-    public void UpdateStatus(Status status)
+    internal void UpdateStatus(Status status)
     {
         Status = status;
     }
 
-    public UnitResult<Error> SetMainPhoto(PhotoPath photoPath)
+    internal UnitResult<Error> SetMainPhoto(PhotoPath photoPath)
     {
         var petPhoto = _petPhotos.FirstOrDefault(x => x.PhotoPath == photoPath);
         if (petPhoto is null)
@@ -98,10 +97,10 @@ public class Pet : Entity<PetId>, ISoftDeletable
         return UnitResult.Success<Error>();
     }
 
-    public void Move(Position newPosition) =>
+    internal void Move(Position newPosition) =>
         Position = newPosition;
 
-    public UnitResult<Error> MoveForward()
+    internal UnitResult<Error> MoveForward()
     {
         var newPosition = Position.Forward();
         if (newPosition.IsFailure)
@@ -112,7 +111,7 @@ public class Pet : Entity<PetId>, ISoftDeletable
         return Result.Success<Error>();
     }
 
-    public UnitResult<Error> MoveBack()
+    internal UnitResult<Error> MoveBack()
     {
         var newPosition = Position.Back();
         if (newPosition.IsFailure)
@@ -122,7 +121,4 @@ public class Pet : Entity<PetId>, ISoftDeletable
 
         return Result.Success<Error>();
     }
-
-    public void IsDeactivate() => _isDeleted = true;
-    public void IsActivate() => _isDeleted = false;
 }

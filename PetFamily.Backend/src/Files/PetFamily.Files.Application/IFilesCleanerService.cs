@@ -2,5 +2,5 @@ namespace PetFamily.Files.Application;
 
 public interface IFilesCleanerService
 {
-    Task Process(CancellationToken cancellationToken = default);
+    Task ProcessAsync(CancellationToken cancellationToken = default);
 }

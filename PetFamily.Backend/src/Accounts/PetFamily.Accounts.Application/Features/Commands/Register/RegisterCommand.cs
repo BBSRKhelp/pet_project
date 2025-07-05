@@ -1,6 +1,5 @@
 ﻿using PetFamily.Accounts.Contracts.DTOs;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.DTOs;
 
 namespace PetFamily.Accounts.Application.Features.Commands.Register;
 

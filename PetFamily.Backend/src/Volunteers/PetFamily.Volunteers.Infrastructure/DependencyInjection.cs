@@ -5,7 +5,10 @@ using PetFamily.Core;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel;
 using PetFamily.Volunteers.Application.Interfaces;
+using PetFamily.Volunteers.Infrastructure.BackgroundServices;
+using PetFamily.Volunteers.Infrastructure.BackgroundServices.Services;
 using PetFamily.Volunteers.Infrastructure.Database;
+using PetFamily.Volunteers.Infrastructure.Options;
 
 namespace PetFamily.Volunteers.Infrastructure;
 
@@ -16,7 +19,9 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         return services.AddDatabase(configuration)
-            .AddRepositories();
+            .AddRepositories()
+            .AddBackgroundService()
+            .AddConfigurations(configuration);
     }
 
     private static IServiceCollection AddDatabase(
@@ -37,6 +42,19 @@ public static class DependencyInjection
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         return services;
+    }
+
+    private static IServiceCollection AddBackgroundService(this IServiceCollection services)
+    {
+        services.AddHostedService<DeleteExpiredPetsAndVolunteersBackgroundService>();
+        services.AddScoped<DeleteExpiredPetsAndVolunteersService>();
+        
+        return services;
+    }
+
+    private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+    {
+        return services.Configure<SoftDeleteOptions>(configuration.GetSection(SoftDeleteOptions.SOFT_DELETE));
     }
 
     private static IServiceCollection AddRepositories(

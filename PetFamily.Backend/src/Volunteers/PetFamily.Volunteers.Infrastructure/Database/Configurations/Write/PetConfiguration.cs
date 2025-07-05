@@ -130,6 +130,13 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnOrder(16);
         });
 
+        builder.Property(p => p.PetPhotos)
+            .IsRequired()
+            .ValueObjectsCollectionJsonConversion(
+                pp => new PetPhotoDto(pp.PhotoPath.Path, pp.IsMainPhoto),
+                dto => new PetPhoto(PhotoPath.Create(dto.PhotoPath).Value, dto.IsMainPhoto))
+            .HasColumnOrder(17);
+        
         builder.ComplexProperty(p => p.BreedAndSpeciesId, bsb =>
         {
             bsb.Property(ad => ad.SpeciesId)
@@ -138,24 +145,22 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasConversion(
                     id => id.Value,
                     value => SpeciesId.Create(value))
-                .HasColumnOrder(17);
+                .HasColumnOrder(18);
 
             bsb.Property(ad => ad.BreedId)
                 .IsRequired()
                 .HasColumnName("breed_id")
-                .HasColumnOrder(18);
+                .HasColumnOrder(19);
         });
 
-        builder.Property(p => p.PetPhotos)
+        builder.Property(p => p.IsDeleted)
             .IsRequired()
-            .ValueObjectsCollectionJsonConversion(
-                pp => new PetPhotoDto(pp.PhotoPath.Path, pp.IsMainPhoto),
-                dto => new PetPhoto(PhotoPath.Create(dto.PhotoPath).Value, dto.IsMainPhoto))
-            .HasColumnOrder(21);
-
-        builder.Property<bool>("_isDeleted")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted")
+            .HasColumnOrder(21);
+        
+        builder.Property(p => p.DeletionDate)
+            .IsRequired(false)
+            .HasColumnName("deletion_date")
             .HasColumnOrder(22);
     }
 }

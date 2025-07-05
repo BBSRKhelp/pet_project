@@ -95,7 +95,7 @@ public class UploadFilesToPetHandler : ICommandHandler<Guid, UploadFilesToPetCom
                 return (ErrorList)petResult.Error;
             }
 
-            petResult.Value.AddPhotos(petPhotos);
+            volunteerResult.Value.AddPetPhotos(petResult.Value, petPhotos);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

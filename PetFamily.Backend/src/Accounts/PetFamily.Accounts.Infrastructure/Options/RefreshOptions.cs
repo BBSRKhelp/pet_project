@@ -4,5 +4,5 @@ public class RefreshOptions
 {
     public const string REFRESH = nameof(REFRESH);
 
-    public byte RefreshTokenLifeTimeD { get; init; }
+    public byte RefreshTokenLifeTimeDays { get; init; }
 }

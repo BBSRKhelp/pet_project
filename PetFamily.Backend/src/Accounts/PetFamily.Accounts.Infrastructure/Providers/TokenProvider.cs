@@ -49,13 +49,13 @@ public class TokenProvider : ITokenProvider
             new(CustomClaims.JTI, jti.ToString())
         }.Concat(roleClaims);
 
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
         var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
         
         var jwtToken = new JwtSecurityToken(
             issuer: _jwtOptions.Issuer,
             audience: _jwtOptions.Audience,
-            expires: DateTime.UtcNow.AddMinutes(_jwtOptions.AccessTokenLifeTimeM),
+            expires: DateTime.UtcNow.AddMinutes(_jwtOptions.AccessTokenLifeTimeMinutes),
             signingCredentials: signingCredentials,
             claims: claims);
 
@@ -77,7 +77,7 @@ public class TokenProvider : ITokenProvider
             token,
             jti,
             DateTime.UtcNow,
-            DateTime.UtcNow.AddDays(_refreshOptions.RefreshTokenLifeTimeD),
+            DateTime.UtcNow.AddDays(_refreshOptions.RefreshTokenLifeTimeDays),
             user);
 
         await _accountsContext.RefreshSessions.AddAsync(refreshSession, cancellationToken);

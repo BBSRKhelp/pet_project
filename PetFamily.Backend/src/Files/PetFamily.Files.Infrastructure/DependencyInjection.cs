@@ -5,6 +5,7 @@ using PetFamily.Core.Messaging;
 using PetFamily.Core.Providers;
 using PetFamily.Files.Application;
 using PetFamily.Files.Infrastructure.BackgroundServices;
+using PetFamily.Files.Infrastructure.BackgroundServices.Services;
 using PetFamily.Files.Infrastructure.MessageQueues;
 using PetFamily.Files.Infrastructure.Options;
 using PetFamily.Files.Infrastructure.Providers;
@@ -45,7 +46,7 @@ public static class DependencyInjection
 
             options.WithEndpoint(minioOptions.Endpoint);
             options.WithCredentials(minioOptions.AccessKey, minioOptions.SecretKey);
-            options.WithSSL(minioOptions.WithSsl);
+            options.WithSSL(minioOptions.UseSsl);
         });
 
         services.AddScoped<IFileProvider, MinioProvider>();

@@ -1,7 +1,8 @@
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
+using PetFamily.SharedKernel;
 
-namespace PetFamily.SharedKernel.ValueObjects;
+namespace PetFamily.Accounts.Domain.ValueObjects;
 
 public class PhoneNumber : ComparableValueObject
 {
@@ -12,7 +13,7 @@ public class PhoneNumber : ComparableValueObject
         Value = value;
     }
 
-    public string Value { get; } = null!;
+    public string Value { get; }
 
     public static Result<PhoneNumber, Error> Create(string value)
     {

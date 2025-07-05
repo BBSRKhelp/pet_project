@@ -1,8 +1,8 @@
 using PetFamily.Accounts.Application.Features.Commands.Login;
 using PetFamily.Accounts.Application.Features.Commands.RefreshToken;
 using PetFamily.Accounts.Application.Features.Commands.Register;
+using PetFamily.Accounts.Contracts.DTOs;
 using PetFamily.Accounts.Contracts.Requests;
-using PetFamily.Core.DTOs;
 
 namespace PetFamily.Accounts.Presentation;
 

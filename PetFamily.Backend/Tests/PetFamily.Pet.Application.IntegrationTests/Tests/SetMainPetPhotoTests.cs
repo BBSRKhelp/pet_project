@@ -26,7 +26,7 @@ public class SetMainPetPhotoTests : PetTestsBase
         var pet = await SeedPetAsync(volunteer, species.Id, breedId);
 
         var petPhoto = new PetPhoto(PhotoPath.Create("123").Value, false);
-        pet.AddPhotos([petPhoto]);
+        volunteer.AddPetPhotos(pet, [petPhoto]);
         
         var command = new SetMainPetPhotoCommand(volunteer.Id.Value, pet.Id.Value, petPhoto.PhotoPath.Path);
         
@@ -56,7 +56,7 @@ public class SetMainPetPhotoTests : PetTestsBase
         var pet = await SeedPetAsync(volunteer, species.Id, breedId);
 
         var petPhoto = new PetPhoto(PhotoPath.Create("123").Value, false);
-        pet.AddPhotos([petPhoto]);
+        volunteer.AddPetPhotos(pet, [petPhoto]);
         
         var command = new SetMainPetPhotoCommand(Guid.Empty, pet.Id.Value, petPhoto.PhotoPath.Path);
         

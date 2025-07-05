@@ -19,11 +19,13 @@ public static class DependencyInjection
 
     private static IServiceCollection AddSerilog(this IServiceCollection services, IConfiguration configuration)
     {
+        const string SEQ_LOGS = "SeqLogs";
+
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console()
             .WriteTo.Debug()
-            .WriteTo.Seq(configuration.GetConnectionString("Seq")
-                         ?? throw new ArgumentNullException("Seq"))
+            .WriteTo.Seq(configuration.GetConnectionString(SEQ_LOGS)
+                         ?? throw new ArgumentNullException(SEQ_LOGS))
             .Enrich.WithThreadId()
             .Enrich.WithMachineName()
             .Enrich.WithEnvironmentName()

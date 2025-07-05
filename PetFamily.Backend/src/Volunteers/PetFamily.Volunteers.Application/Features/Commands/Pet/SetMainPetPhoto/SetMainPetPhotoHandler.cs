@@ -20,7 +20,8 @@ public class SetMainPetPhotoHandler : ICommandHandler<Guid, SetMainPetPhotoComma
     public SetMainPetPhotoHandler(
         IVolunteersRepository volunteersRepository,
         IValidator<SetMainPetPhotoCommand> validator,
-        [FromKeyedServices(UnitOfWorkContext.Volunteers)]IUnitOfWork unitOfWork,
+        [FromKeyedServices(UnitOfWorkContext.Volunteers)]
+        IUnitOfWork unitOfWork,
         ILogger<SetMainPetPhotoHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
@@ -28,47 +29,47 @@ public class SetMainPetPhotoHandler : ICommandHandler<Guid, SetMainPetPhotoComma
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
-    
+
     public async Task<Result<Guid, ErrorList>> HandleAsync(
-        SetMainPetPhotoCommand command, 
+        SetMainPetPhotoCommand command,
         CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Setting main pet photo with id = {PetId}", command.PetId);
-        
+
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
         {
             _logger.LogWarning("Set main pet photo failed");
             return validationResult.ToErrorList();
         }
-        
+
         var volunteerResult = await _volunteersRepository.GetByIdAsync(command.VolunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
         {
             _logger.LogWarning("Set main pet photo failed");
-            return (ErrorList)volunteerResult.Error;
+            return volunteerResult.Error.ToErrorList();
         }
-        
+
         var petResult = volunteerResult.Value.GetPetById(command.PetId);
         if (petResult.IsFailure)
         {
             _logger.LogWarning("Set main pet photo failed");
-            return (ErrorList)petResult.Error;
+            return petResult.Error.ToErrorList();
         }
 
         var photoPath = PhotoPath.Create(command.PhotoPath).Value;
-        
-        var result = petResult.Value.SetMainPhoto(photoPath);
+
+        var result = volunteerResult.Value.SetMainPetPhoto(petResult.Value, photoPath);
         if (result.IsFailure)
         {
             _logger.LogWarning("Set main pet photo failed");
-            return (ErrorList)result.Error;
+            return result.Error.ToErrorList();
         }
-        
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Set main pet photo success with id = {PetId}", command.PetId);
-        
+
         return petResult.Value.Id.Value;
     }
 }

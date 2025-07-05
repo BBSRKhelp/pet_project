@@ -40,9 +40,7 @@ builder.Services.AddVolunteersPresentation() //DI Volunteers
 var app = builder.Build();
 
 if (!app.Environment.IsEnvironment("Testing"))
-{
     await app.UseAccountsSeederAsync();
-}
 
 app.UseExceptionMiddleware();
 
@@ -64,7 +62,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
 
 namespace PetFamily.Web
 {

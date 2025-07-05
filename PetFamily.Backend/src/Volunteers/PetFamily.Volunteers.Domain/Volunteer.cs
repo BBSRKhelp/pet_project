@@ -1,15 +1,16 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Core.Enums;
+using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel;
+using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Domain.ValueObjects;
 using PetFamily.Volunteers.Domain.ValueObjects.Ids;
 
 namespace PetFamily.Volunteers.Domain;
 
-public class Volunteer() : Entity<VolunteerId>(VolunteerId.NewId()), ISoftDeletable
+public class Volunteer() : SoftDeletableEntity<VolunteerId>(VolunteerId.NewId())
 {
-    private bool _isDeleted;
     private readonly List<Pet> _pets = [];
 
     public IReadOnlyList<Pet> Pets => _pets.AsReadOnly();
@@ -23,7 +24,7 @@ public class Volunteer() : Entity<VolunteerId>(VolunteerId.NewId()), ISoftDeleta
         var pet = _pets.FirstOrDefault(p => p.Id == id);
         if (pet is null)
             return Errors.General.NotFound(nameof(pet));
-        
+
         return pet;
     }
 
@@ -38,6 +39,37 @@ public class Volunteer() : Entity<VolunteerId>(VolunteerId.NewId()), ISoftDeleta
         _pets.Add(pet);
         return Result.Success<Error>();
     }
+
+    public UnitResult<Error> SetMainPetPhoto(Pet pet, PhotoPath photoPath)
+    {
+        var result = pet.SetMainPhoto(photoPath);
+
+        return result.IsFailure ? result.Error : Result.Success<Error>();
+    }
+
+    public void UpdateMainPetInfo(
+        Pet pet,
+        Name name,
+        Description description,
+        AppearanceDetails appearanceDetails,
+        Address address,
+        DateOnly? birthday,
+        HealthDetails healthDetails,
+        BreedAndSpeciesId breedAndSpeciesId)
+    {
+        pet.UpdateMainInfo(
+            name,
+            description,
+            appearanceDetails,
+            address,
+            birthday,
+            healthDetails,
+            breedAndSpeciesId);
+    }
+
+    public void UpdatePetStatus(Pet pet, Status status) => pet.UpdateStatus(status);
+
+    public void AddPetPhotos(Pet pet, IReadOnlyList<PetPhoto> photos) => pet.AddPhotos(photos);
 
     public UnitResult<Error> MovePet(Pet pet, Position newPosition)
     {
@@ -104,23 +136,54 @@ public class Volunteer() : Entity<VolunteerId>(VolunteerId.NewId()), ISoftDeleta
         return Result.Success<Error>();
     }
 
-    public void DeletePet(Pet pet) => _pets.Remove(pet);
-    
-    public void IsActivate()
+    private void RecalculatePositionOfOtherPets(Position position)
     {
-        _isDeleted = false;
+        var pets = _pets.Where(p => p.Position > position).ToList();
 
-        foreach (var pet in _pets)
-        {
-            pet.IsActivate();
-        }
+        foreach (var pet in pets)
+            pet.SetPosition(Position.Create(pet.Position.Value - 1).Value);
     }
 
-    public void IsDeactivate()
+    public void DeletePet(Pet pet)
     {
-        _isDeleted = true;
+        RecalculatePositionOfOtherPets(pet.Position);
+
+        _pets.Remove(pet);
+    }
+
+    public void SoftDeletePet(Pet pet)
+    {
+        RecalculatePositionOfOtherPets(pet.Position);
+
+        pet.SoftDelete();
+    }
+
+    public UnitResult<Error> RestorePet(Pet pet)
+    {
+        pet.Restore();
+
+        var moveResult = MovePet(pet, Position.Create(_pets.Count).Value);
+        if (moveResult.IsFailure)
+            return moveResult.Error;
+
+        return UnitResult.Success<Error>();
+    }
+
+    public void DeleteExpiredPets(byte retentionDays) => _pets.RemoveAll(p => p.ShouldBeHardDeleted(retentionDays));
+
+    public override void SoftDelete()
+    {
+        base.SoftDelete();
 
         foreach (var pet in _pets)
-            pet.IsDeactivate();
+            pet.SoftDelete();
+    }
+
+    public override void Restore()
+    {
+        base.Restore();
+
+        foreach (var pet in _pets)
+            pet.Restore();
     }
 }

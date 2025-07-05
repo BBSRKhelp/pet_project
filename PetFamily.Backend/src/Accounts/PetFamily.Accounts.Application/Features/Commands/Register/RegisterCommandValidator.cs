@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
+using PetFamily.Accounts.Domain.ValueObjects;
 using PetFamily.Core.Validation;
 using PetFamily.SharedKernel;
-using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Accounts.Application.Features.Commands.Register;
 

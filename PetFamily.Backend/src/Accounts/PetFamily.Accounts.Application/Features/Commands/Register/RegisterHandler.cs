@@ -5,10 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Application.Interfaces.Managers;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Accounts.Domain.ValueObjects;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel;
-using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Accounts.Application.Features.Commands.Register;
 

@@ -93,7 +93,8 @@ public class UpdateMainPetInfoHandler : ICommandHandler<Guid, UpdateMainPetInfoC
             command.BreedAndSpeciesId.SpeciesId,
             command.BreedAndSpeciesId.BreedId).Value;
 
-        petResult.Value.UpdateMainInfo(
+        volunteerResult.Value.UpdateMainPetInfo(
+            petResult.Value,
             name,
             description,
             appearanceDetails,

@@ -5,32 +5,25 @@ using PetFamily.Core.Models;
 
 namespace PetFamily.Framework.Authorization;
 
-public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttribute>
+public class PermissionRequirementHandler(IServiceScopeFactory scopeFactory) : AuthorizationHandler<PermissionAttribute>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
-
-    public PermissionRequirementHandler(IServiceScopeFactory scopeFactory)
-    {
-        _scopeFactory = scopeFactory;
-    }
-
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = scopeFactory.CreateScope();
 
         var accountsContract = scope.ServiceProvider.GetRequiredService<IAccountsContract>();
-        
-        var userIdString = context.User.Claims
+
+        var userIdClaim = context.User.Claims
             .FirstOrDefault(c => c.Type == CustomClaims.NAME_IDENTIFIER)?.Value;
 
-        if (!Guid.TryParse(userIdString, out var userId))
+        if (!Guid.TryParse(userIdClaim, out var userId))
         {
             context.Fail();
             return;
         }
-        
+
         var permissionCodes = await accountsContract.GetUserPermissionCodesAsync(userId);
 
         if (permissionCodes.Contains(permission.Code))
@@ -38,7 +31,7 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
             context.Succeed(permission);
             return;
         }
-        
+
         context.Fail();
     }
 }

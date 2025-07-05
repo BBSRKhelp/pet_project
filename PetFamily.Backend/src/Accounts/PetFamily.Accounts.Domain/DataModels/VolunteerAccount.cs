@@ -1,5 +1,4 @@
 ﻿using PetFamily.Accounts.Domain.ValueObjects;
-using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Accounts.Domain.DataModels;

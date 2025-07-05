@@ -13,8 +13,7 @@ namespace PetFamily.Volunteers.Application.Features.Commands.Volunteer.Delete;
 public class DeleteVolunteerHandler(
     IVolunteersRepository volunteersRepository,
     IValidator<DeleteVolunteerCommand> validator,
-    [FromKeyedServices(UnitOfWorkContext.Volunteers)]
-    IUnitOfWork unitOfWork,
+    [FromKeyedServices(UnitOfWorkContext.Volunteers)] IUnitOfWork unitOfWork,
     ILogger<CreateVolunteerHandler> logger)
     : ICommandHandler<Guid, DeleteVolunteerCommand>
 {
@@ -27,7 +26,7 @@ public class DeleteVolunteerHandler(
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
             return validationResult.ToErrorList();
-        
+
         var volunteerResult = await volunteersRepository.GetByIdAsync(command.Id, cancellationToken);
         if (volunteerResult.IsFailure)
         {
@@ -35,7 +34,7 @@ public class DeleteVolunteerHandler(
             return (ErrorList)volunteerResult.Error;
         }
 
-        volunteerResult.Value.IsDeactivate();
+        volunteerResult.Value.SoftDelete();
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

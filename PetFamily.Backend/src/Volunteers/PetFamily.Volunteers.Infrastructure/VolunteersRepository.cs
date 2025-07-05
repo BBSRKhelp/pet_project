@@ -11,25 +11,25 @@ namespace PetFamily.Volunteers.Infrastructure;
 
 public class VolunteersRepository : IVolunteersRepository
 {
-    private readonly WriteDbContext _dbContext;
+    private readonly WriteDbContext _writeDbContext;
     private readonly ILogger<VolunteersRepository> _logger;
 
-    public VolunteersRepository(WriteDbContext dbContext, ILogger<VolunteersRepository> logger)
+    public VolunteersRepository(WriteDbContext writeDbContext, ILogger<VolunteersRepository> logger)
     {
-        _dbContext = dbContext;
+        _writeDbContext = writeDbContext;
         _logger = logger;
     }
 
     public async Task<Guid> AddAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
-        await _dbContext.Volunteers.AddAsync(volunteer, cancellationToken);
+        await _writeDbContext.Volunteers.AddAsync(volunteer, cancellationToken);
 
         return volunteer.Id.Value;
     }
 
     public Guid Delete(Volunteer volunteer)
     {
-        _dbContext.Volunteers.Remove(volunteer);
+        _writeDbContext.Volunteers.Remove(volunteer);
 
         return volunteer.Id.Value;
     }
@@ -38,7 +38,7 @@ public class VolunteersRepository : IVolunteersRepository
         VolunteerId volunteerId,
         CancellationToken cancellationToken = default)
     {
-        var volunteer = await _dbContext
+        var volunteer = await _writeDbContext
             .Volunteers
             .FirstOrDefaultAsync(v => v.Id == volunteerId, cancellationToken);
 

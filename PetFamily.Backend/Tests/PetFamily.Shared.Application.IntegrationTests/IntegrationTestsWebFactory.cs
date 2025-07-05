@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using PetFamily.Web;
@@ -109,8 +108,8 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         using var scope = Services.CreateScope();
         var volunteerDbContext = scope.ServiceProvider.GetRequiredService<VolunteerWriteDbContext>();
         var speciesDbContext = scope.ServiceProvider.GetRequiredService<SpeciesWriteDbContext>();
-        await volunteerDbContext.Database.MigrateAsync();
-        await speciesDbContext.Database.MigrateAsync();
+        await volunteerDbContext.Database.EnsureCreatedAsync();
+        await speciesDbContext.Database.EnsureCreatedAsync();
 
         _dbConnection = new NpgsqlConnection(DbContainer.GetConnectionString());
         await InitializeRespawner();

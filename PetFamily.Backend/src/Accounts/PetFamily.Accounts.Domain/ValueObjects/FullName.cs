@@ -1,7 +1,8 @@
 using CSharpFunctionalExtensions;
+using PetFamily.SharedKernel;
 using static System.String;
 
-namespace PetFamily.SharedKernel.ValueObjects;
+namespace PetFamily.Accounts.Domain.ValueObjects;
 
 public record FullName
 {

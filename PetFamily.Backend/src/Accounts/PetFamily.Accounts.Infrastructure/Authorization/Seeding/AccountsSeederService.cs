@@ -4,11 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Accounts.Domain.ValueObjects;
 using PetFamily.Accounts.Infrastructure.Authorization.Managers;
 using PetFamily.Accounts.Infrastructure.Options;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel;
-using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Accounts.Infrastructure.Authorization.Seeding;
 

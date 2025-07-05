@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
+using PetFamily.Accounts.Domain.ValueObjects;
 using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.ValueObjects;
 

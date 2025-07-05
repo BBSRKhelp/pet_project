@@ -18,16 +18,20 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             .HasConversion(
                 id => id.Value,
                 value => VolunteerId.Create(value));
-        
-        builder.Property<bool>("_isDeleted")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("is_deleted");
 
         builder.HasMany(v => v.Pets)
             .WithOne()
             .HasForeignKey("volunteer_id")
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Property(v => v.IsDeleted)
+            .IsRequired()
+            .HasColumnName("is_deleted");
+        
+        builder.Property(v => v.DeletionDate)
+            .IsRequired(false)
+            .HasColumnName("deletion_date");
 
         builder.Navigation(v => v.Pets).AutoInclude();
     }
